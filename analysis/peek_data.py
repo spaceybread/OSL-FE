@@ -2,7 +2,7 @@ import polars as pl
 import numpy as np
 from pathlib import Path
 
-root_dirs = ["voice_128", "voice_64", "ytf_128", "ytf_64", "vggface2_64"]
+root_dirs = ["voice_128", "voice_64", "ytf_128", "ytf_64", "vggface2_64", "vggface2_128"]
 
 zero_map = {
     "voice_128": 16.0743087414,
