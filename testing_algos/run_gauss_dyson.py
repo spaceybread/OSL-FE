@@ -55,8 +55,8 @@ def match(c_vec, q_vec, scale, unit_vectors):
     if found == 1:
         return True
 #    return False
-    helper, a = gen(c_vec, 0.70123291015625 * 0.8)
-    b = recov(helper, q_vec, 0.70123291015625 * 0.8)
+    helper, a = gen(c_vec, 0.70123291015625 * 0.72)
+    b = recov(helper, q_vec, 0.70123291015625 * 0.72)
 
     return np.array_equal(a, b)
 
