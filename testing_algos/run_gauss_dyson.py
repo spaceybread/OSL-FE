@@ -43,7 +43,7 @@ def match(c_vec, q_vec, scale, unit_vectors):
         vec = unit_vectors[i]
         ofc = c_vec + vec
         
-        small_lat_sc = 0.6
+        small_lat_sc = 0.4
         
         helper, a = gen(ofc * OFFSET * 0.95, OFFSET * small_lat_sc)
         b = recov(helper, q_vec, OFFSET * small_lat_sc)
