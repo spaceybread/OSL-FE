@@ -34,31 +34,30 @@ def gen(vec, scale):
 def recov(helper, vec, scale):
     return round_scaled(helper + vec, scale)
 
-@nb.njit(parallel=False, fastmath=True)
+@nb.njit(parallel=True, fastmath=True)
 def match(c_vec, q_vec, scale, unit_vectors):
     OFFSET = scale
+
+    helper, a = gen(c_vec, 0.70892333984375 * 0.72)
+    b = recov(helper, q_vec, 0.70892333984375 * 0.72)
+
+    if np.array_equal(a, b):
+        return True
+
     found = 0
+    small_lat_sc = 0.4
 
     for i in nb.prange(unit_vectors.shape[0]):
         vec = unit_vectors[i]
         ofc = c_vec + vec
-        
-        small_lat_sc = 0.4
-        
+
         helper, a = gen(ofc * OFFSET * 0.95, OFFSET * small_lat_sc)
         b = recov(helper, q_vec, OFFSET * small_lat_sc)
 
         if np.array_equal(a, b):
-            found = 1
-#            print('blah')
+            found = 1   # SAFE: monotonic write
 
-    if found == 1:
-        return True
-#    return False
-    helper, a = gen(c_vec, 0.70123291015625 * 0.72)
-    b = recov(helper, q_vec, 0.70123291015625 * 0.72)
-
-    return np.array_equal(a, b)
+    return found == 1
 
     
 
