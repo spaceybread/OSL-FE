@@ -6,10 +6,10 @@ import numba as nb
 from tqdm import tqdm
 import sys
 
-NUM_POTENTIALS = 10**5
-INNER_LATTICE_SCALE = 0.5
-OUTER_LATTICE_SCALE = 0.65
-RING_RADIUS = 1.5
+NUM_POTENTIALS = 10**4
+INNER_LATTICE_SCALE = 0.4
+OUTER_LATTICE_SCALE = 0.53
+RING_RADIUS = 0.975
 
 UNIT_VECTORS = None
 
@@ -63,7 +63,7 @@ def match(c_vec, q_vec, offset, unit_vectors):
     if a[0] == b[0] and arrays_equal(a, b): return True
     for i in nb.prange(unit_vectors.shape[0]):
         vec = unit_vectors[i]
-        ofc = c_vec + vec * RING_RADIUS
+        ofc = c_vec + vec * RING_RADIUS * offset
 
         helper, a = gen(ofc, offset * OUTER_LATTICE_SCALE)
         b = recov(helper, q_vec, offset * OUTER_LATTICE_SCALE)
@@ -127,7 +127,7 @@ def main():
     data = get_data(src_file)
 
     unit_vectors = precompute_unit_vectors(
-        num_vecs=10**5,
+        num_vecs=NUM_POTENTIALS,
         dim=64,
         seed=42
     )
