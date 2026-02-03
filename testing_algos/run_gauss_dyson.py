@@ -6,8 +6,8 @@ import numba as nb
 from tqdm import tqdm
 import sys
 
-# from dyson_vggface_spec import * 
-from dyson_ytf_spec import *  
+from dyson_vggface_spec import * 
+# from dyson_ytf_spec import *  
 # from dyson_voice_spec import * 
 
 UNIT_VECTORS = None
@@ -127,7 +127,7 @@ def main():
 
     unit_vectors = precompute_unit_vectors(
         num_vecs=NUM_POTENTIALS,
-        dim=64,
+        dim=128,
         seed=42
     )
 
