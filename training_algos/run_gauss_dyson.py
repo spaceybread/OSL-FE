@@ -145,7 +145,7 @@ def main():
 
     unit_vectors = precompute_unit_vectors(
         num_vecs=NUM_POTENTIALS,
-        dim=128,
+        dim=64,
         seed=42
     )
 
