@@ -6,10 +6,9 @@ import numba as nb
 from tqdm import tqdm
 import sys
 
-NUM_POTENTIALS = 10**4
-INNER_LATTICE_SCALE = 0.4
-OUTER_LATTICE_SCALE = 0.53
-RING_RADIUS = 0.975
+# from dyson_vggface_spec import * 
+from dyson_ytf_spec import *  
+# from dyson_voice_spec import * 
 
 UNIT_VECTORS = None
 
