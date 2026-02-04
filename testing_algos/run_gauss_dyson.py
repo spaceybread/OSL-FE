@@ -6,9 +6,17 @@ import numba as nb
 from tqdm import tqdm
 import sys
 
-from dyson_vggface_spec import * 
+# from dyson_vggface_spec import * 
 # from dyson_ytf_spec import *  
 # from dyson_voice_spec import * 
+
+INNER_LATTICE_SCALE = 0.2
+NUM_POTENTIALS = 10**4
+
+NUM_DIMS = 64
+
+OUTER_LATTICE_SCALE = 0.525
+RING_RADIUS = 0.95
 
 UNIT_VECTORS = None
 
@@ -127,7 +135,7 @@ def main():
 
     unit_vectors = precompute_unit_vectors(
         num_vecs=NUM_POTENTIALS,
-        dim=128,
+        dim=NUM_DIMS,
         seed=42
     )
 
