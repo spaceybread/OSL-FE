@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 import sys
+from multiprocessing import Pool, cpu_count
 
 def get_data(npz_file): return np.load(npz_file, allow_pickle=True).item()
 
@@ -26,17 +27,14 @@ def match(c_vec, q_vec, scale):
     n0_scale = scale * 1.0
     n1_scale = scale * 1.0
 
-    # Precompute randoms
     rand_base = np.random.uniform(0, 100, n)
 
-    # Base check
     rdm = np.round(rand_base / scale) * scale
     helper = rdm - c_vec
     b = np.round((helper + q_vec) / scale) * scale
     if np.all(rdm == b):
         return True
 
-    # Single offset checks
     for i in range(n):
         for sign in (+1, -1):
             x = c_vec.copy()
@@ -47,7 +45,6 @@ def match(c_vec, q_vec, scale):
             if np.all(rdm == b):
                 return True
 
-    # Pairwise
     for i in range(n - 1):
         for j in range(i + 1, n):
             for s0 in (+1, -1):
@@ -63,27 +60,43 @@ def match(c_vec, q_vec, scale):
     return False
 
 
+_data = None
+_coeff = None
+
+def _init(data, coeff):
+    global _data, _coeff
+    _data = data
+    _coeff = coeff
+
+def process_key(key):
+    rad = _coeff
+    cen = _data[key][0]
+    tchk = sum(1 if match(cen, val, rad) else 0 for val in _data[key][2])
+    tks  = len(_data[key][2])
+    fchk = sum(1 if match(cen, val, rad) else 0 for val in _data[key][3])
+    fks  = len(_data[key][3])
+    return tchk, tks, fchk, fks
+
+
 def run_bin_search(data, coeff):
     keys = list(data.keys())
 
-    tchk, fchk = 0, 0
-    tks, fks = 0, 0
+    with Pool(
+        processes=cpu_count(),
+        initializer=_init,
+        initargs=(data, coeff),
+    ) as pool:
+        results = list(tqdm(pool.imap(process_key, keys), total=len(keys)))
 
-    for key in tqdm(keys):
-        rad = data[key][1] * coeff
-        cen = data[key][0]
+    tchk = sum(r[0] for r in results)
+    tks  = sum(r[1] for r in results)
+    fchk = sum(r[2] for r in results)
+    fks  = sum(r[3] for r in results)
 
-        tchk += sum([1 if match(cen, val, rad) else 0 for val in data[key][2]])
-        tks += len(data[key][2])
-        fchk += sum([1 if match(cen, val, rad) else 0 for val in data[key][3]])
-        fks += len(data[key][3])
+    return tchk / tks, fchk / fks
 
-    tmr, fmr = tchk / tks, fchk / fks
-
-    return tmr, fmr
 
 def run_sweep(data, save_path, COEFF):
-    
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 
     tmr, fmr = run_bin_search(data, COEFF)
@@ -91,14 +104,14 @@ def run_sweep(data, save_path, COEFF):
     res_ma["coeff"].append(COEFF)
     res_ma["TMR"].append(tmr)
     res_ma["FMR"].append(fmr)
-    
+
     print("Done! Check:", save_path)
     pd.DataFrame.from_dict(res_ma, orient='columns').to_csv(save_path, index=False)
 
 def main():
     src_file = sys.argv[1]
     dst_file = sys.argv[2]
-    coeff = float(sys.argv[3])
+    coeff    = float(sys.argv[3]) * 100
 
     data = get_data(src_file)
     run_sweep(data, dst_file, coeff)

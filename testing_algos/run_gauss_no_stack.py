@@ -31,7 +31,7 @@ def run_bin_search(data, coeff):
     
     
     for key in tqdm(keys):
-        rad = data[key][1] * coeff
+        rad =  coeff
         cen = data[key][0]
     
         tchk += sum([1 if match(cen, val, rad) else 0 for val in data[key][2]])
@@ -58,7 +58,7 @@ def run_sweep(data, save_path, COEFF):
 def main():
     src_file = sys.argv[1]
     dst_file = sys.argv[2]
-    coeff = float(sys.argv[3])
+    coeff = float(sys.argv[3]) * 100
 
     data = get_data(src_file)
     run_sweep(data, dst_file, coeff)

@@ -14,7 +14,7 @@ UNIT_VECTORS = None
 
 NUM_POTENTIALS = 10**4
 RING_RADIUS = 0
-INNER_LATTICE_SCALE = 0.2
+INNER_LATTICE_SCALE = 0.2 * 100 
 OUTER_LATTICE_SCALE = 0
 
 
@@ -106,8 +106,8 @@ def run_bin_search(data, unit_vectors):
         vals_t = np.asarray(data[key][2])
         vals_f = np.asarray(data[key][3])
 
-        tchk += match_batch_full(cen, vals_t, rad, unit_vectors, RING_RADIUS, INNER_LATTICE_SCALE, OUTER_LATTICE_SCALE)
-        fchk += match_batch_full(cen, vals_f, rad, unit_vectors, RING_RADIUS, INNER_LATTICE_SCALE, OUTER_LATTICE_SCALE)
+        tchk += match_batch_full(cen, vals_t, 1, unit_vectors, RING_RADIUS, INNER_LATTICE_SCALE, OUTER_LATTICE_SCALE)
+        fchk += match_batch_full(cen, vals_f, 1, unit_vectors, RING_RADIUS, INNER_LATTICE_SCALE, OUTER_LATTICE_SCALE)
 
         tks += len(vals_t)
         fks += len(vals_f)
@@ -120,12 +120,12 @@ def run_sweep(data, save_path, unit_vectors):
     
     res_ma = {"outer": [], "radius":[], "TMR": [], "FMR": []}
    
-    scales = [0.4, 0.425, 0.45, 0.475, 0.5, 0.525, 0.55, 0.575, 0.6]
+    scales = [0.675, 0.7, 0.725, 0.75]
     for sc in scales:
-        for rad in [0.8, 0.85, 0.9, 0.95, 1.0]:
+        for rad in [0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]:
         
-            OUTER_LATTICE_SCALE = sc
-            RING_RADIUS = rad
+            OUTER_LATTICE_SCALE = sc * 100
+            RING_RADIUS = rad * 100
             tmr, fmr = run_bin_search(data, unit_vectors)
     
             res_ma["outer"].append(OUTER_LATTICE_SCALE)
@@ -145,7 +145,7 @@ def main():
 
     unit_vectors = precompute_unit_vectors(
         num_vecs=NUM_POTENTIALS,
-        dim=128,
+        dim=64,
         seed=42
     )
 

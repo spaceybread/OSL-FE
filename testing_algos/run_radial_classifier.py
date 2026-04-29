@@ -14,7 +14,7 @@ def run_bin_search(data, coeff):
     tks, fks = 0, 0
         
     for key in keys:
-        rad = data[key][0] * coeff
+        rad =  coeff
             
         tchk += sum([1 if val < rad else 0 for val in data[key][1]])
         tks += len(data[key][1])
@@ -40,7 +40,7 @@ def run_sweep(data, save_path, COEFF):
 def main():
     src_file = sys.argv[1]
     dst_file = sys.argv[2]
-    coeff = float(sys.argv[3])
+    coeff = float(sys.argv[3]) * 100
 
     data = get_data(src_file)
     run_sweep(data, dst_file, coeff)

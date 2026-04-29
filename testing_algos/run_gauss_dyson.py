@@ -10,13 +10,13 @@ import sys
 # from dyson_ytf_spec import *  
 # from dyson_voice_spec import * 
 
-INNER_LATTICE_SCALE = 0.2
+INNER_LATTICE_SCALE = 0.2 * 100 
 NUM_POTENTIALS = 10**4
 
-NUM_DIMS = 64
+NUM_DIMS = 128
 
-OUTER_LATTICE_SCALE = 0.525
-RING_RADIUS = 0.95
+OUTER_LATTICE_SCALE = 0.725 * 100
+RING_RADIUS = 1.0 * 100
 
 UNIT_VECTORS = None
 
@@ -106,8 +106,8 @@ def run_bin_search(data, unit_vectors):
         vals_t = np.asarray(data[key][2])
         vals_f = np.asarray(data[key][3])
 
-        tchk += match_batch_full(cen, vals_t, rad, unit_vectors)
-        fchk += match_batch_full(cen, vals_f, rad, unit_vectors)
+        tchk += match_batch_full(cen, vals_t, 1, unit_vectors)
+        fchk += match_batch_full(cen, vals_f, 1, unit_vectors)
 
         tks += len(vals_t)
         fks += len(vals_f)

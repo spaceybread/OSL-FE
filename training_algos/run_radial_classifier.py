@@ -6,7 +6,7 @@ import sys
 def get_data(npz_file): return np.load(npz_file, allow_pickle=True).item()
 
 def run_bin_search(data, alpha): 
-    hi, lo = 2, 0
+    hi, lo = 4, 0
 
     keys = list(data.keys())
     res = {}
@@ -18,7 +18,7 @@ def run_bin_search(data, alpha):
         coeff = (hi + lo) / 2
 
         for key in keys: 
-            rad = data[key][0] * coeff
+            rad = coeff * 100
             
             tchk += sum([1 if val < rad else 0 for val in data[key][1]])
             tks += len(data[key][1])
@@ -36,7 +36,7 @@ def run_bin_search(data, alpha):
 def run_sweep(data, save_path): 
     res_ma = {"coeff": [], "TMR": [], "FMR": []}
 
-    for i in [70, 90]:
+    for i in [95]:
         resdb, idx = run_bin_search(data, i / 100)
 
         res_ma["coeff"].append(idx)
